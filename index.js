@@ -54,6 +54,45 @@ bot.onText(/\/setbirthday (.+)/, (msg, match) => {
   }
 });
 
+// Function to send greeting to all users
+function sendGreeting(message) {
+  users.forEach((u) => bot.sendMessage(u.id, message));
+}
+
+// Morning
+cron.schedule("0 8 * * *", () => {
+  sendGreeting("🌅 Good Morning! Wishing you a day full of smiles!");
+});
+
+// Afternoon
+cron.schedule("0 13 * * *", () => {
+  sendGreeting("🌞 Good Afternoon! Keep going strong!");
+});
+
+// Evening
+cron.schedule("0 18 * * *", () => {
+  sendGreeting("🌇 Good Evening! Hope you had a wonderful day!");
+});
+
+// Night
+cron.schedule("0 22 * * *", () => {
+  sendGreeting("🌙 Good Night! Sweet dreams!");
+});
+
+// Birthday wishes
+cron.schedule("0 9 * * *", () => {
+  const today = new Date();
+  const dateStr = today.toLocaleDateString("en-GB").slice(0, 5); // "DD/MM"
+  users.forEach((u) => {
+    if (u.birthday && u.birthday.replace("-", "/") === dateStr) {
+      bot.sendMessage(
+        u.id,
+        `🎉 Happy Birthday ${u.name}! 🥳\nWishing you a wonderful year ahead!`
+      );
+    }
+  });
+});
+
 //  Minimal web health route so Render can ping
 app.get("/", (req, res) => res.send("Bot running"));
 
