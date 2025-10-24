@@ -37,11 +37,24 @@ bot.onText(/\/start/, (msg) => {
   }
   bot.sendMessage(
     chatId,
-    `👋 Hello ${name}! I’ll greet you daily and wish you on your hday!`
+    `👋 Hello ${name}! I’ll greet you daily and wish you on your birthday! 🎉\n\nUse /setbirthday to tell me your birth date (DD-MM format).`
   );
 });
 
-// --- Minimal web health route so Render can ping ---
+// setting birthday handler
+bot.onText(/\/setbirthday (.+)/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const date = match[1];
+  const user = users.find((u) => u.id === chatId);
+
+  if (user) {
+    user.birthday = date;
+    saveUsers();
+    bot.sendMessage(chatId, `🎂 Got it! I’ll wish you every year on ${date}!`);
+  }
+});
+
+//  Minimal web health route so Render can ping
 app.get("/", (req, res) => res.send("Bot running"));
 
 app.listen(PORT, () => {
