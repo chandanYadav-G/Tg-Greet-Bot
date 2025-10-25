@@ -3,6 +3,7 @@
 // server code
 require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
+const https = require("https");
 const cron = require("node-cron");
 const fs = require("fs");
 const express = require("express");
@@ -90,6 +91,13 @@ cron.schedule("0 9 * * *", () => {
         `🎉 Happy Birthday ${u.name}! 🥳\nWishing you a wonderful year ahead!`
       );
     }
+  });
+});
+
+// scheduling ping to bot every 5 minutes to keep it awake
+cron.schedule("*/5 * * * *", () => {
+  https.get("https://tg-greet-bot.onrender.com", (res) => {
+    console.log("Pinged render:", res.statusCode);
   });
 });
 
